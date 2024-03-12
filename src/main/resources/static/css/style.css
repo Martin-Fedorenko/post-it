@@ -1,0 +1,39 @@
+    body, html {
+        height: 100%;
+    }
+    #contenedor-principal{
+        margin-top: 72px;
+        height: 100%;
+    }
+    #fila-principal{
+        height: 100%;
+    }
+    .columna{
+
+    }
+    #centro{
+
+    }
+    #izquierda{
+        background-color: blue;
+    }
+    #derecha{
+        background-color: green;
+    }
+    #entrada-publicacion{
+        margin: 20px 0px;
+    }
+    .entrada-publicacion-input{
+        font-size:25px;
+    }
+
+
+
+    @media (max-width: 992px) {
+        .costado{
+            display: none;
+        }
+        #centro{
+            width:100%
+        }
+    }
