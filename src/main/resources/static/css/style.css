@@ -9,25 +9,36 @@
         height: 100%;
     }
     .columna{
-
     }
     #centro{
-
     }
     #izquierda{
-        background-color: blue;
     }
     #derecha{
-        background-color: green;
     }
     #entrada-publicacion{
         margin: 20px 0px;
     }
-    .entrada-publicacion-input{
-        font-size:25px;
+    .publicacion{
+        padding-right:0px;
+        padding-left:0px;
     }
-
-
+    .contenido{
+        background-color:#222;
+        color: white;
+    }
+    .entrada-comentario{
+        margin-top:5px;
+    }
+    .perfil{
+        margin: 20px 0px;
+    }
+    .estadistica{
+        text-align: center;
+    }
+    .amigos{
+       margin: 20px 0px;
+    }
 
     @media (max-width: 992px) {
         .costado{
