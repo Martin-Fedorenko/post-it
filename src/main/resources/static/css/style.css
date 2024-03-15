@@ -1,5 +1,5 @@
     body, html {
-        height: 100%;
+
     }
     #contenedor-principal{
         margin-top: 72px;
@@ -16,6 +16,9 @@
     }
     #derecha{
     }
+
+    /* HOME */
+
     #entrada-publicacion{
         margin: 20px 0px;
     }
@@ -36,9 +39,61 @@
     .estadistica{
         text-align: center;
     }
-    .amigos{
+    #entrada-busqueda{
        margin: 20px 0px;
     }
+    .iconos .btn {
+        padding: 0;
+        border-radius: 50%;
+    }
+    .iconos .fa-1 {
+        font-size: 1rem;
+    }
+    .iconos .fa-3 {
+        font-size: 3rem;
+    }
+    .boton-icono-success{
+        color: #77b300;
+    }
+    .boton-icono-secondary{
+        color: #555;
+    }
+
+    /* LOGIN & REGISTER*/
+
+    .login{
+        margin: 20px 0px;
+        padding-right:0px;
+        padding-left:0px;
+    }
+    .boton-largo{
+        width:100%;
+    }
+    .fila-form-login{
+        height: 70vh;
+    }
+
+    /* HOVER */
+
+    .boton-icono-success:hover {
+        color: #659800;
+    }
+
+    .boton-icono-secondary:hover {
+        color: #484848;
+    }
+
+    /* ACTIVE */
+
+    .btn.boton-icono-success:active{
+        color: #659800;
+    }
+
+    .btn.boton-icono-secondary:active{
+        color: #484848;
+    }
+
+    /* MEDIA */
 
     @media (max-width: 992px) {
         .costado{

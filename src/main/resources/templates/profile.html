@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Post it!</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/cyborg/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <link href="../static/css/style.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg bg-dark fixed-top" data-bs-theme="dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Post it!</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarColor02">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link active" href="#">Inicio
+            <span class="visually-hidden">(current)</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Perfil</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Amigos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Sugerencias</a>
+        </li>
+      </ul>
+      <div class="navbar-nav ms-auto">
+        <a class="nav-link" href="#">Cerrar sesión</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="container-fluid" id="contenedor-principal">
+  <div class="row" id="fila-principal">
+    <!-- IZQUIERDA-PERFIL -->
+    <div class="col-lg-3 columna costado" id="izquierda">
+      <div class="container-fluid">
+        <div class="row">
+          <!-- Contenido izquierda -->
+        </div>
+      </div>
+    </div>
+    <!-- CENTRO-PUBLICACIONES -->
+    <div class="col-lg-6 columna" id="centro">
+      <div class="container-fluid">
+        <div class="row justify-content-center align-items-center fila-form-login">
+          <div class="card mb-3 login">
+            <h3 class="card-header">Perfil</h3>
+            <div class="card-body">
+              <div class="row">
+                <div class="col">
+                  <h4 class="card-title">Pepe Pepon</h4>
+                  <h6 class="card-subtitle mb-2 text-muted">@perfil</h6>
+                </div>
+                <div class="col-auto d-flex justify-content-center align-items-center">
+                  <div class="iconos">
+                    <button class="btn btn-link boton-icono-success" type="button">
+                      <i class="fa fa-3 fa-check-circle fa-3x"></i>
+                    </button>
+                    <button class="btn btn-link boton-icono-secondary" type="button">
+                      <i class="fa fa-3 fa-solid fa-circle-xmark fa-3x"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <hr>
+              <p>lfajsofjaosjfopajsofjaosfjoajsofjaosjfoajsofjaojsf</p>
+              <hr>
+              <div class="row estadisticas">
+                <div class="col-6 estadistica">
+                  <div>200</div>
+                  <div>Publicaciones</div>
+                </div>
+                <div class="col-6 estadistica">
+                  <div>200</div>
+                  <div>Amigos</div>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <!-- Pie de tarjeta -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- DERECHA-AMIGOS -->
+    <div class="col-lg-3 columna costado" id="derecha">
+      <div class="container-fluid">
+        <div class="row">
+          <!-- Contenido derecha -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
+
+
+
+
