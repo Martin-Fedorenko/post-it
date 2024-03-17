@@ -1,9 +1,11 @@
 package postit.Model;
 
-import jakarta.persistence.GeneratedValue;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Relationship;
@@ -38,5 +40,9 @@ public class Person {
                         Collections.emptySet()).stream()
                 .map(Person::getName)
                 .toList();
+    }
+
+    public Person(String name) {
+        this.name = name;
     }
 }
