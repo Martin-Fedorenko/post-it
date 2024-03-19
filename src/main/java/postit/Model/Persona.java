@@ -42,4 +42,10 @@ public class Persona {
     public Persona(String idUsuario) {
         this.idUsuario = idUsuario;
     }
+
+    public Persona(String idUsuario, String nombreCuenta, String nombrePersona) {
+        this.idUsuario = idUsuario;
+        this.nombreCuenta = nombreCuenta;
+        this.nombrePersona = nombrePersona;
+    }
 }

@@ -50,7 +50,7 @@ if (signInForm) {
 
       // Actualizar información de inicio de sesión
       window.sessionStorage.clear();
-      loginInfo.idUsuario = userCredential.user.uid;
+      loginInfo.idUsuario = userCredentials.user.uid;
       window.sessionStorage.setItem('idUsuario', loginInfo.idUsuario);
 
       // Enviar evento de inicio de sesión
