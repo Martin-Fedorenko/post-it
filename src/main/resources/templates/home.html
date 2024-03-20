@@ -45,8 +45,8 @@
     <!----------------------IZQUIERDA-PERFIL---------------------->
     <div class="col-lg-3 columna costado" id="izquierda">
       <div class="container-fluid">
-        <div class="row">
-          <div class="card mb-3 pt-3 pb-3 perfil">
+        <div class="row fila-izquierda">
+          <div class="card mb-3 pt-3 pb-3" id="perfil">
             <div class="card-body">
               <h4 class="card-title">Pepe Pepon</h4>
               <h6 class="card-subtitle mb-2 text-muted">@perfil</h6>
@@ -65,7 +65,7 @@
               </div>
             </div>
           </div>
-          <div class="card mb-3 pt-3 pb-3 amigos">
+          <div class="card mb-3 pt-3 pb-3" id="amigos">
             <div class="card-body">
               <h4 class="card-title">Amigos</h4>
               <hr>
@@ -112,7 +112,77 @@
     <!----------------------CENTRO-PUBLICACIONES---------------------->
     <div class="col-lg-6 columna" id="centro">
       <div class="container-fluid">
-        <div class="row">
+        <div class="row justify-content-center align-items-center fila-login">
+          <div class="card mb-3 login">
+            <h3 class="card-header">Iniciar sesión</h3>
+            <div class="card-body">
+              <div class="row">
+                <form id="login-form" >
+                  <div class="mb-3">
+                    <input type="text" class="form-control" name="login-email" placeholder="Correo electronico">
+                  </div>
+                  <div class="mb-3">
+                    <input type="password" class="form-control" name="login-password" placeholder="Contraseña">
+                  </div>
+                  <button class="btn btn-success boton-largo boton-login" type="submit">Loguear</button>
+                </form>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-6 mb-3 mb-sm-0">
+                  <button class="btn btn-warning boton-largo" id="google-login" type="submit">Google</button>
+                </div>
+                <div class="col-sm-6">
+                  <button class="btn btn-primary boton-largo" type="submit">Facebook</button>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+            </div>
+          </div>
+        </div>
+        <div class="row justify-content-center align-items-center fila-register">
+          <div class="card mb-3 register">
+            <h3 class="card-header">Crear una cuenta</h3>
+            <div class="card-body">
+              <div class="row">
+                <form id="register-form">
+                  <div class="mb-3">
+                    <input type="text" class="form-control" name="register-email" placeholder="Correo electronico">
+                  </div>
+                  <div class="mb-3">
+                    <input type="text" class="form-control" name="register-password" placeholder="Contraseña">
+                  </div>
+                  <button class="btn btn-success boton-largo boton-login" type="submit">Registrar</button>
+                </form>
+              </div>
+            </div>
+            <div class="card-footer">
+            </div>
+          </div>
+        </div>
+        <div class="row justify-content-center align-items-center fila-config">
+          <div class="card mb-3 config">
+            <h3 class="card-header">Configurar cuenta</h3>
+            <div class="card-body">
+              <div class="row">
+                <form id="configuration-form">
+                  <input type="hidden" id="idUsuarioInput" name="idUsuario">
+                  <div class="mb-3">
+                    <input type="text" class="form-control" name="nombreCuenta" placeholder="Nombre de cuenta">
+                  </div>
+                  <div class="mb-3">
+                    <input type="text" class="form-control" name="nombrePersona" placeholder="Nombre de usuario">
+                  </div>
+                  <button class="btn btn-success boton-largo boton-login" type="submit">Configurar</button>
+                </form>
+              </div>
+            </div>
+            <div class="card-footer">
+            </div>
+          </div>
+        </div>
+        <div class="row fila-home">
           <div class="card mb-3 pt-3 pb-3" id="entrada-publicacion">
             <form>
               <div class="input-group">
@@ -121,72 +191,74 @@
               </div>
             </form>
           </div>
-          <div class="card mb-3 publicacion">
-            <div class="card-header">
-              <div class="row">
-                <div class="col">
-                  <div class="d-flex align-items-center">
-                    <div class="me-2">Name</div>
-                    <div class="me-2">•</div>
-                    <div class="me-2">@User</div>
-                    <div class="me-2">•</div>
-                    <div class="me-2">2 minutes ago</div>
+          <div id="publicaciones">
+            <div class="card mb-3 publicacion">
+              <div class="card-header">
+                <div class="row">
+                  <div class="col">
+                    <div class="d-flex align-items-center">
+                      <div class="me-2">Name</div>
+                      <div class="me-2">•</div>
+                      <div class="me-2">@User</div>
+                      <div class="me-2">•</div>
+                      <div class="me-2">2 minutes ago</div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div class="card-body contenido">
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            </div>
-            <div class="card-footer comentarios">
-              <div class="entrada-comentario">
-                <form>
-                  <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Comment it!">
-                    <button class="btn btn-success" type="button">Publicar</button>
-                  </div>
-                </form>
+              <div class="card-body contenido">
+                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
               </div>
-              <hr>
-              <ul class="list-group lista-comentarios">
-                <li class="list-group-item comentario">Cras justo odio</li>
-                <li class="list-group-item comentario">Dapibus ac facilisis in</li>
-                <li class="list-group-item comentario">Vestibulum at eros</li>
-              </ul>
+              <div class="card-footer comentarios">
+                <div class="entrada-comentario">
+                  <form>
+                    <div class="input-group">
+                      <input type="text" class="form-control" placeholder="Comment it!">
+                      <button class="btn btn-success" type="button">Publicar</button>
+                    </div>
+                  </form>
+                </div>
+                <hr>
+                <ul class="list-group lista-comentarios">
+                  <li class="list-group-item comentario">Cras justo odio</li>
+                  <li class="list-group-item comentario">Dapibus ac facilisis in</li>
+                  <li class="list-group-item comentario">Vestibulum at eros</li>
+                </ul>
+              </div>
             </div>
-          </div>
-          <div class="card mb-3 publicacion">
-            <div class="card-header">
-              <div class="row">
-                <div class="col">
-                  <div class="d-flex align-items-center">
-                    <div class="me-2">Name</div>
-                    <div class="me-2">•</div>
-                    <div class="me-2">@User</div>
-                    <div class="me-2">•</div>
-                    <div class="me-2">2 minutes ago</div>
+            <div class="card mb-3 publicacion">
+              <div class="card-header">
+                <div class="row">
+                  <div class="col">
+                    <div class="d-flex align-items-center">
+                      <div class="me-2">Name</div>
+                      <div class="me-2">•</div>
+                      <div class="me-2">@User</div>
+                      <div class="me-2">•</div>
+                      <div class="me-2">2 minutes ago</div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div class="card-body contenido">
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            </div>
-            <div class="card-footer comentarios">
-              <div class="entrada-comentario">
-                <form>
-                  <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Comment it!">
-                    <button class="btn btn-success" type="button">Publicar</button>
-                  </div>
-                </form>
+              <div class="card-body contenido">
+                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
               </div>
-              <hr>
-              <ul class="list-group lista-comentarios">
-                <li class="list-group-item comentario">Cras justo odio</li>
-                <li class="list-group-item comentario">Dapibus ac facilisis in</li>
-                <li class="list-group-item comentario">Vestibulum at eros</li>
-              </ul>
+              <div class="card-footer comentarios">
+                <div class="entrada-comentario">
+                  <form>
+                    <div class="input-group">
+                      <input type="text" class="form-control" placeholder="Comment it!">
+                      <button class="btn btn-success" type="button">Publicar</button>
+                    </div>
+                  </form>
+                </div>
+                <hr>
+                <ul class="list-group lista-comentarios">
+                  <li class="list-group-item comentario">Cras justo odio</li>
+                  <li class="list-group-item comentario">Dapibus ac facilisis in</li>
+                  <li class="list-group-item comentario">Vestibulum at eros</li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
@@ -196,16 +268,57 @@
 
     <div class="col-lg-3 columna costado" id="derecha">
       <div class="container-fluid">
-        <div class="row">
+        <div class="row fila-derecha">
           <div class="card mb-3 pt-3 pb-3" id="entrada-busqueda">
             <form>
               <div class="input-group">
-                <input type="text" class="form-control"  name="nombrePersona"  placeholder="Search friends!">
+                <input type="text" class="form-control"  placeholder="Search friends!">
                 <button class="btn btn-success" type="submit">Buscar</button>
               </div>
             </form>
           </div>
-          <div class="card mb-3 pt-3 pb-3 sugerencias">
+          <div class="card mb-3 pt-3 pb-3" id="resultados">
+            <div class="card-body">
+              <h4 class="card-title">Resultados</h4>
+              <hr>
+              <ul class="list-group lista-comentarios">
+                <li class="list-group-item d-flex justify-content-between align-items-center comentario">
+                  <div>Pepe</div>
+                  <div class="iconos">
+                    <button class="btn btn-link boton-icono-success" type="button">
+                      <i class="fa fa-1 fa-check-circle"></i>
+                    </button>
+                    <button class="btn btn-link boton-icono-secondary" type="button">
+                      <i class="fa fa-1 fa-circle-xmark"></i>
+                    </button>
+                  </div>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center comentario">
+                  <div>Pepe</div>
+                  <div class="iconos">
+                    <button class="btn btn-link boton-icono-success" type="button">
+                      <i class="fa fa-1 fa-check-circle"></i>
+                    </button>
+                    <button class="btn btn-link boton-icono-secondary" type="button">
+                      <i class="fa fa-1 fa-circle-xmark"></i>
+                    </button>
+                  </div>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center comentario">
+                  <div>Pepe</div>
+                  <div class="iconos">
+                    <button class="btn btn-link boton-icono-success" type="button">
+                      <i class="fa fa-1 fa-check-circle"></i>
+                    </button>
+                    <button class="btn btn-link boton-icono-secondary" type="button">
+                      <i class="fa fa-1 fa-circle-xmark"></i>
+                    </button>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="card mb-3 pt-3 pb-3" id="sugerencias">
             <div class="card-body">
               <h4 class="card-title">Sugerencias</h4>
               <hr>

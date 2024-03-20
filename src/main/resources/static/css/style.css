@@ -17,12 +17,16 @@
     #derecha{
     }
 
+    #rower{
+        display: none;
+    }
+
     /* HOME */
 
     #entrada-publicacion{
         margin: 20px 0px;
     }
-    .publicacion{
+    #publicaciones{
         padding-right:0px;
         padding-left:0px;
     }
@@ -33,7 +37,7 @@
     .entrada-comentario{
         margin-top:5px;
     }
-    .perfil{
+    #perfil{
         margin: 20px 0px;
     }
     .estadistica{
@@ -58,19 +62,20 @@
     .boton-icono-secondary{
         color: #555;
     }
+    .boton-largo{
+        width:100%;
+    }
 
-    /* LOGIN & REGISTER*/
+    /* LOGIN, REGISTER & CONFIG */
 
-    .login{
+    .login, .register, .config{
         margin: 20px 0px;
         padding-right:0px;
         padding-left:0px;
     }
-    .boton-largo{
-        width:100%;
-    }
-    .fila-form-login{
+    .fila-register, .fila-login, .fila-config{
         height: 70vh;
+        display:none;
     }
 
     /* HOVER */
@@ -103,3 +108,19 @@
             width:100%
         }
     }
+
+    /* DISPLAY */
+
+    .fila-home, .fila-izquierda, .fila-derecha{
+        display: show;
+    }
+    .fila-login{
+        display:none;
+    }
+    .fila-register{
+        display:none;
+    }
+    .fila-config{
+        display:none;
+    }
+

@@ -91,7 +91,7 @@ if (signUpForm) {
       window.sessionStorage.setItem('idUsuario', loginInfo.idUsuario);
 
       // Enviar evento de inicio de sesión después del registro
-      await sendRegister(loginInfo);
+      await sendLogin(loginInfo);
 
     } catch (error) {
       if (error.code === 'auth/email-already-in-use') {
@@ -128,31 +128,6 @@ if(logout){
 
 function sendLogin(loginInfo) {
   fetch('/login', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(loginInfo),
-  })
-    .then((response) => {
-      if (response.ok) {
-        // Receive the string from the response body
-        return response.text();
-      } else {
-        throw new Error('Network response was not ok.');
-      }
-    })
-    .then((redirectUrl) => {
-      // Redirect to the received URL
-      window.location.href = redirectUrl;
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-    });
-}
-
-function sendRegister(loginInfo) {
-  fetch('/register', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
