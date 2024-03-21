@@ -40,19 +40,19 @@
         <div class="row fila-izquierda">
           <div class="card mb-3 pt-3 pb-3" id="perfil">
             <div class="card-body">
-              <h4 class="card-title">Pepe Pepon</h4>
-              <h6 class="card-subtitle mb-2 text-muted">@perfil</h6>
+              <h4 class="card-title" id="nombrePersonaPerfil"></h4>
+              <h6 class="card-subtitle mb-2 text-muted" id="nombreCuentaPerfil"></h6>
               <hr>
-              <p>lfajsofjaosjfopajsofjaosfjoajsofjaosjfoajsofjaojsf</p>
+              <p id="descripcionPerfil">lfajsofjaosjfopajsofjaosfjoajsofjaosjfoajsofjaojsf</p>
               <hr>
               <div class="row estadisticas">
                 <div class="col-6 estadistica">
-                  <div>200</div>
-                  <div>Publicaciones</div>
+                  <div id="cantidadAmigosPerfil"></div>
+                  <div>Amigos</div>
                 </div>
                 <div class="col-6 estadistica">
-                  <div>200</div>
-                  <div>Amigos</div>
+                  <div id="cantidadPublicacionesPerfil"></div>
+                  <div>Posts</div>
                 </div>
               </div>
             </div>
@@ -165,6 +165,9 @@
                   <div class="mb-3">
                     <input type="text" class="form-control" name="nombrePersona" placeholder="Nombre de usuario">
                   </div>
+                  <div class="mb-3">
+                    <input type="text" class="form-control" name="descripcion" placeholder="Descripción">
+                  </div>
                   <button class="btn btn-success boton-largo" id="boton-config" type="submit">Configurar</button>
                 </form>
               </div>
@@ -261,9 +264,9 @@
       <div class="container-fluid">
         <div class="row fila-derecha">
           <div class="card mb-3 pt-3 pb-3" id="entrada-busqueda">
-            <form>
+            <form id="buscar-form">
               <div class="input-group">
-                <input type="text" class="form-control"  placeholder="Search friends!">
+                <input type="text" class="form-control" id="input-buscar"  placeholder="Search friends!">
                 <button class="btn btn-success" type="submit">Buscar</button>
               </div>
             </form>

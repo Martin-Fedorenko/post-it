@@ -29,6 +29,8 @@ public class Persona {
 
     private String nombrePersona;
 
+    private String descripcion;
+
     @Relationship(type = "AMIGOS")
     public Set<Persona> amigos;
 
@@ -43,9 +45,10 @@ public class Persona {
         this.idUsuario = idUsuario;
     }
 
-    public Persona(String idUsuario, String nombreCuenta, String nombrePersona) {
+    public Persona(String idUsuario, String nombreCuenta, String nombrePersona, String descripcion) {
         this.idUsuario = idUsuario;
         this.nombreCuenta = nombreCuenta;
         this.nombrePersona = nombrePersona;
+        this.descripcion = descripcion;
     }
 }

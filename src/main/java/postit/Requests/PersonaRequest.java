@@ -4,6 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Setter @Getter
-public class LoginRequest {
+public class PersonaRequest {
     private String idUsuario;
 }
