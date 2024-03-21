@@ -69,13 +69,9 @@
     /* LOGIN, REGISTER & CONFIG */
 
     .login, .register, .config{
-        margin: 20px 0px;
+        margin: 100px 0px;
         padding-right:0px;
         padding-left:0px;
-    }
-    .fila-register, .fila-login, .fila-config{
-        height: 70vh;
-        display:none;
     }
 
     /* HOVER */
@@ -111,16 +107,9 @@
 
     /* DISPLAY */
 
-    .fila-home, .fila-izquierda, .fila-derecha{
-        display: show;
-    }
-    .fila-login{
-        display:none;
-    }
-    .fila-register{
-        display:none;
-    }
-    .fila-config{
-        display:none;
+
+
+    .hidden {
+        display: none;
     }
 

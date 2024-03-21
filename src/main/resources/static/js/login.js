@@ -2,15 +2,51 @@ import { signInWithEmailAndPassword,createUserWithEmailAndPassword,GoogleAuthPro
 import { signOut } from "https://www.gstatic.com/firebasejs/10.2.0/firebase-auth.js"
 import { auth } from "./firebase.js";
 
-
 let loginInfo = {
   idUsuario: null,
 };
 
+let registerInfo = {
+  idUsuario: null,
+  nombreCuenta: null,
+  nombrePersona: null
+};
+
+window.sessionStorage.clear();
+
 const googleButton = document.querySelector("#google-login");
+const configButton = document.querySelector("#boton-config");
 const signInForm = document.querySelector("#login-form");
 const signUpForm = document.querySelector("#register-form");
 const logout = document.querySelector("#logout");
+
+const filaLogin = document.querySelector(".fila-login");
+const filaRegister = document.querySelector(".fila-register");
+const filaConfig = document.querySelector(".fila-config");
+const filaHome = document.querySelector(".fila-home");
+const filaIzq = document.querySelector(".fila-izquierda");
+const filaDer = document.querySelector(".fila-derecha");
+
+const navRegistrarse = document.querySelector("#nav-link-registrarse");
+const navLoguearse = document.querySelector("#nav-link-loguearse");
+
+document.addEventListener("DOMContentLoaded", function() {
+    filaRegister.style.display = "none";
+    filaConfig.style.display = "none";
+    filaHome.style.display = "none";
+    filaIzq.style.display = "none";
+    filaDer.style.display = "none";
+});
+
+navRegistrarse.addEventListener("click", function() {
+    filaRegister.style.display = "block";
+    filaLogin.style.display = "none";
+});
+
+navLoguearse.addEventListener("click", function() {
+    filaRegister.style.display = "none";
+    filaLogin.style.display = "block";
+});
 
 if(googleButton) {
   googleButton.addEventListener("click", async (e) => {
@@ -18,18 +54,48 @@ if(googleButton) {
 
     const provider = new GoogleAuthProvider();
     try {
-      console.log("google sign in");
+
+      console.log("google button clicked");
       const userCredentials = await signInWithPopup(auth, provider)
       console.log(userCredentials);
-      console.log("google sign in");
 
       window.sessionStorage.clear();
-      loginInfo.idUsuario = userCredentials.user.uid;
-      window.sessionStorage.setItem('idUsuario', loginInfo.idUsuario);
 
-       console.log("1");
-      await sendLogin(loginInfo);
-        console.log("4");
+      window.sessionStorage.setItem('idUsuario', userCredentials.user.uid);
+      loginInfo.idUsuario = window.sessionStorage.getItem('idUsuario');
+
+      if (await tieneQueRegistrar(loginInfo)){
+        filaLogin.style.display = 'none';
+        filaConfig.style.display = 'block';
+      }else{
+        filaLogin.style.display = 'none';
+        filaHome.style.display = 'block';
+      }
+      console.log("Se paso por google");
+    } catch (error) {
+      console.log(error);
+    }
+  });
+}
+
+if(configButton) {
+  configButton.addEventListener("click", async (e) => {
+    e.preventDefault();
+
+    try {
+
+      console.log("config button clicked");
+
+      registerInfo.idUsuario = window.sessionStorage.getItem('idUsuario');
+      registerInfo.nombreCuenta = document.querySelector('input[name="nombreCuenta"]').value;
+      registerInfo.nombrePersona = document.querySelector('input[name="nombrePersona"]').value;
+      console.log(registerInfo);
+      if(await registrar(registerInfo)){
+        filaConfig.style.display = 'none';
+        filaHome.style.display = 'block';
+      }
+
+      console.log("Y estamos en home");
     } catch (error) {
       console.log(error);
     }
@@ -50,11 +116,10 @@ if (signInForm) {
 
       // Actualizar información de inicio de sesión
       window.sessionStorage.clear();
-      loginInfo.idUsuario = userCredentials.user.uid;
-      window.sessionStorage.setItem('idUsuario', loginInfo.idUsuario);
+      window.sessionStorage.setItem('idUsuario', userCredentials.user.uid);
 
-      // Enviar evento de inicio de sesión
-      await sendLogin(loginInfo);
+      filaLogin.style.display = "none";
+      filaHome.style.display = "block";
 
     } catch (error) {
       console.log(error)
@@ -82,16 +147,19 @@ if (signUpForm) {
     const password = signUpForm["register-password"].value;
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      console.log(userCredential);
+        console.log("email button clicked");
+      const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
+      console.log(userCredentials);
 
       // Actualizar información de inicio de sesión
       window.sessionStorage.clear();
-      loginInfo.idUsuario = userCredential.user.uid;
-      window.sessionStorage.setItem('idUsuario', loginInfo.idUsuario);
+            window.sessionStorage.setItem('idUsuario', userCredentials.user.uid);
 
-      // Enviar evento de inicio de sesión después del registro
-      await sendLogin(loginInfo);
+
+      filaRegister.style.display = "none";
+      filaConfig.style.display = "block";
+      console.log("que pasa");
+
 
     } catch (error) {
       if (error.code === 'auth/email-already-in-use') {
@@ -119,34 +187,57 @@ if(logout){
         // Send logout event to the backend
         console.log("signed out");
 
-        window.location.href = '/login';
+        //window.location.href = '/login';
       } catch (error) {
         console.log(error);
       }
     });
 }
 
-function sendLogin(loginInfo) {
-  fetch('/login', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(loginInfo),
-  })
-    .then((response) => {
-      if (response.ok) {
-        // Receive the string from the response body
-        return response.text();
-      } else {
-        throw new Error('Network response was not ok.');
-      }
-    })
-    .then((redirectUrl) => {
-      // Redirect to the received URL
-      window.location.href = redirectUrl;
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-    });
+async function tieneQueRegistrar(loginInfo) {
+    try {
+        const response = await fetch(" http://localhost:8080/tieneQueRegistrar", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(loginInfo)
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log(data);
+        return !!data;
+    } catch (error) {
+        console.error('Error:', error);
+        return false;
+    }
 }
+
+async function registrar(registerInfo) {
+    try {
+        const response = await fetch(" http://localhost:8080/registrar", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(registerInfo)
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        console.log(await response.text());
+        return true;
+    } catch (error) {
+        console.error('Error:', error);
+        return false;
+    }
+}
+
+
+
+

@@ -19,18 +19,10 @@
     <div class="collapse navbar-collapse" id="navbarColor02">
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
-          <a class="nav-link active" href="#">Inicio
-            <span class="visually-hidden">(current)</span>
-          </a>
+          <a class="nav-link" id="nav-link-registrarse">Registrarse</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Perfil</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Amigos</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Sugerencias</a>
+          <a class="nav-link" id="nav-link-loguearse">Loguearse</a>
         </li>
       </ul>
       <div class="navbar-nav ms-auto">
@@ -124,7 +116,7 @@
                   <div class="mb-3">
                     <input type="password" class="form-control" name="login-password" placeholder="Contraseña">
                   </div>
-                  <button class="btn btn-success boton-largo boton-login" type="submit">Loguear</button>
+                  <button class="btn btn-success boton-largo" type="submit">Loguear</button>
                 </form>
               </div>
               <hr>
@@ -153,7 +145,7 @@
                   <div class="mb-3">
                     <input type="text" class="form-control" name="register-password" placeholder="Contraseña">
                   </div>
-                  <button class="btn btn-success boton-largo boton-login" type="submit">Registrar</button>
+                  <button class="btn btn-success boton-largo" type="submit">Registrar</button>
                 </form>
               </div>
             </div>
@@ -167,14 +159,13 @@
             <div class="card-body">
               <div class="row">
                 <form id="configuration-form">
-                  <input type="hidden" id="idUsuarioInput" name="idUsuario">
                   <div class="mb-3">
                     <input type="text" class="form-control" name="nombreCuenta" placeholder="Nombre de cuenta">
                   </div>
                   <div class="mb-3">
                     <input type="text" class="form-control" name="nombrePersona" placeholder="Nombre de usuario">
                   </div>
-                  <button class="btn btn-success boton-largo boton-login" type="submit">Configurar</button>
+                  <button class="btn btn-success boton-largo" id="boton-config" type="submit">Configurar</button>
                 </form>
               </div>
             </div>
