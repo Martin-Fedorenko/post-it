@@ -9,5 +9,5 @@ import java.util.List;
 
 @Getter @Setter @AllArgsConstructor
 public class PersonasResponse {
-    private List<Persona> personas;
+    private List<PersonaResponse> personas;
 }

@@ -6,11 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import postit.Model.Persona;
 import postit.Repositories.PersonaRepository;
-import postit.Requests.BuscarRequest;
-import postit.Requests.PersonaRequest;
 import postit.Requests.RegisterRequest;
 import postit.Responses.PerfilResponse;
 import postit.Responses.PersonasResponse;
+import postit.Services.Conversor;
 
 import java.util.List;
 
@@ -19,11 +18,13 @@ public class MainController {
 
     @Autowired
     private PersonaRepository personaRepository;
+    @Autowired
+    private Conversor conversor;
 
     @CrossOrigin(origins = "http://localhost:63342")
-    @PostMapping("/tieneQueRegistrar")
-    public ResponseEntity<Boolean> tieneQueRegistrar(@RequestBody PersonaRequest personaRequest) {
-        Boolean tieneQueRegistrarse = !personaRepository.existsByIdUsuario(personaRequest.getIdUsuario());
+    @GetMapping("/tieneQueRegistrar")
+    public ResponseEntity<Boolean> tieneQueRegistrar(@RequestParam("idUsuario") String idUsuario) {
+        Boolean tieneQueRegistrarse = !personaRepository.existsByIdUsuario(idUsuario);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .header("Content-Type", "application/json")
@@ -44,7 +45,7 @@ public class MainController {
     @GetMapping("/perfil")
     public ResponseEntity<PerfilResponse> perfil(@RequestParam("idUsuario") String idUsuario) {
         Persona persona = personaRepository.findByIdUsuario(idUsuario);
-        PerfilResponse perfilResponse = new PerfilResponse(persona.getIdPersona(),persona.getNombreCuenta(),persona.getNombrePersona(), 259, 399, persona.getDescripcion());
+        PerfilResponse perfilResponse = new PerfilResponse(persona, 259, 399);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .header("Content-Type", "application/json")
@@ -55,7 +56,7 @@ public class MainController {
     @GetMapping("/buscar") //aca en vez de personas tienen que ser personas response
     public ResponseEntity<PersonasResponse> buscar(@RequestParam("nombrePersona") String nombrePersona) {
         List<Persona> personas = personaRepository.findAllByNombrePersona(nombrePersona);
-        PersonasResponse personasResponse = new PersonasResponse(personas);
+        PersonasResponse personasResponse = new PersonasResponse(conversor.convertirPersonasAResponsePersonas(personas));
 
         return ResponseEntity
                 .status(HttpStatus.OK)

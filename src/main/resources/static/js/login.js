@@ -2,10 +2,6 @@ import { signInWithEmailAndPassword,createUserWithEmailAndPassword,GoogleAuthPro
 import { signOut } from "https://www.gstatic.com/firebasejs/10.2.0/firebase-auth.js"
 import { auth } from "./firebase.js";
 
-let loginInfo = {
-  idUsuario: null,
-};
-
 let registerInfo = {
   idUsuario: null,
   nombreCuenta: null,
@@ -15,8 +11,8 @@ let registerInfo = {
 window.sessionStorage.clear();
 
 const googleButton = document.querySelector("#google-login");
-const signInForm = document.querySelector("#login-form");
-const signUpForm = document.querySelector("#register-form");
+const loginForm = document.querySelector("#login-form");
+const registerForm = document.querySelector("#register-form");
 const configForm = document.querySelector("#configuration-form");
 const buscarForm = document.querySelector("#buscar-form");
 
@@ -35,7 +31,11 @@ const divPublicaciones = document.querySelector("#publicaciones");
 
 const navRegistrarse = document.querySelector("#nav-link-registrarse");
 const navLoguearse = document.querySelector("#nav-link-loguearse");
-const logout = document.querySelector("#logout");
+const navLogout = document.querySelector("#logout");
+
+const listaResultados = document.querySelector("#lista-resultados");
+const listaAmigos = document.querySelector("#lista-amigos");
+const listaSugerencias = document.querySelector("#lista-sugerencias");
 
 document.addEventListener("DOMContentLoaded", function() {
     volverAlLogin();
@@ -44,14 +44,50 @@ document.addEventListener("DOMContentLoaded", function() {
 buscarForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     try {
+        listaResultados.innerHTML = '';
         const nombreBuscado = buscarForm.querySelector("#input-buscar").value;
         console.log(nombreBuscado);
-        buscar(nombreBuscado);
-
-    }catch(error){
+        const personas = await buscar(nombreBuscado); // Wait for the personas to be fetched
+        cargarBuscados(personas); // Now personas is available, call cargarBuscados
+        visibilidadLista(listaResultados, divResultados);
+    } catch(error){
         console.log(error);
     }
 });
+
+listaResultados.addEventListener("click", function(event) {
+    if (event.target.classList.contains("fa-circle-xmark")) {
+        const liPadre = event.target.closest("li");
+        console.log(liPadre);
+        if (liPadre) {
+            liPadre.remove();
+        }
+    }
+    visibilidadLista(listaResultados, divResultados);
+});
+
+function cargarBuscados(personas){
+    for (var persona of personas) {
+        console.log(persona);
+
+        var elementoResultado = `<li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div>${persona.nombrePersona}</div>
+                                        <div class="text-muted">${persona.nombrePersona}</div>
+                                    </div>
+                                    <div class="iconos">
+                                        <button class="btn btn-link boton-icono-success" type="button">
+                                            <i class="fa fa-1 fa-check-circle"></i>
+                                        </button>
+                                        <button class="btn btn-link boton-icono-secondary" type="button">
+                                            <i class="fa fa-1 fa-circle-xmark"></i>
+                                        </button>
+                                    </div>
+                                </li> `;
+
+        listaResultados.innerHTML += elementoResultado;
+    }
+};
 
 async function buscar(nombreBuscado) {
     try {
@@ -69,8 +105,8 @@ async function buscar(nombreBuscado) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const data = await response.json();
-        console.log(data.personas[0]);
-        //return response.json();
+        console.log(data.personas);
+        return data.personas;
 
     } catch (error) {
         console.error('Error:', error);
@@ -108,7 +144,7 @@ function volverAlLogin(){
     filaHome.style.display = "none";
     filaIzq.style.display = "none";
     filaDer.style.display = "none";
-    logout.style.display = "none";
+    navLogout.style.display = "none";
     navLoguearse.style.display = "block";
     navRegistrarse.style.display = "block";
     filaLogin.style.display = "block";
@@ -116,26 +152,40 @@ function volverAlLogin(){
 
 async function desbloquearHome() {
     try {
-        const idUsuario = window.sessionStorage.getItem('idUsuario');
-        const persona = await perfil(idUsuario);
-
-        for (const clave in persona) {
-            console.log(clave);
-            const elemento = document.getElementById(clave + "Perfil");
-            if (elemento) {
-                console.log(persona[clave]);
-                elemento.textContent = persona[clave];
-            }
-        }
+        cargarPerfil();
 
         navLoguearse.style.display = "none";
         navRegistrarse.style.display = "none";
-        logout.style.display = "block";
+        navLogout.style.display = "block";
         filaIzq.style.display = "block";
         filaHome.style.display = 'block';
         filaDer.style.display = "block";
     } catch (error) {
         console.error(error);
+    }
+}
+
+function visibilidadLista(listElement, containerElement) {
+    if (!listElement.querySelector('li')) {
+        containerElement.style.display = "none";
+    } else {
+        containerElement.style.display = "block";
+    }
+}
+
+
+
+async function cargarPerfil(){
+    const idUsuario = window.sessionStorage.getItem('idUsuario');
+    const persona = await perfil(idUsuario);
+
+    for (const clave in persona) {
+        console.log(clave);
+        const elemento = document.getElementById(clave + "Perfil");
+        if (elemento) {
+            console.log(persona[clave]);
+            elemento.textContent = persona[clave];
+        }
     }
 }
 
@@ -163,9 +213,9 @@ navLoguearse.addEventListener("click", function() {
       window.sessionStorage.clear();
 
       window.sessionStorage.setItem('idUsuario', userCredentials.user.uid);
-      loginInfo.idUsuario = window.sessionStorage.getItem('idUsuario');
+      const idUsuario = window.sessionStorage.getItem('idUsuario');
 
-      if (await tieneQueRegistrar(loginInfo)){
+      if (await tieneQueRegistrar(idUsuario)){
         filaLogin.style.display = 'none';
         filaConfig.style.display = 'block';
       }else{
@@ -203,12 +253,12 @@ navLoguearse.addEventListener("click", function() {
 // Manejador de eventos para el formulario de inicio de sesión
 
 
-  signInForm.addEventListener("submit", async (e) => {
+  loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const email = signInForm["login-email"].value;
-    const password = signInForm["login-password"].value;
+    const email = loginForm["login-email"].value;
+    const password = loginForm["login-password"].value;
 
-    signInForm.reset();
+    loginForm.reset();
 
     try {
       const userCredentials = await signInWithEmailAndPassword(auth, email, password);
@@ -241,12 +291,12 @@ navLoguearse.addEventListener("click", function() {
 // Manejador de eventos para el formulario de registro
 
 
-  signUpForm.addEventListener("submit", async (e) => {
+  registerForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const email = signUpForm["register-email"].value;
-    const password = signUpForm["register-password"].value;
+    const email = registerForm["register-email"].value;
+    const password = registerForm["register-password"].value;
 
-    signUpForm.reset();
+    registerForm.reset();
 
     try {
       const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
@@ -276,14 +326,14 @@ navLoguearse.addEventListener("click", function() {
 
 
 
-    logout.addEventListener("click", async (e) => {
+    navLogout.addEventListener("click", async (e) => {
       e.preventDefault();
       try {
         // Clear session storage
         //window.sessionStorage.removeItem('idUsuario');
         window.sessionStorage.clear();
         volverAlLogin();
-        // Send logout event to the backend
+        // Send navLogout event to the backend
         console.log("signed out");
 
       } catch (error) {
@@ -292,14 +342,16 @@ navLoguearse.addEventListener("click", function() {
     });
 
 
-async function tieneQueRegistrar(loginInfo) {
+async function tieneQueRegistrar(idUsuario) {
     try {
-        const response = await fetch(" http://localhost:8080/tieneQueRegistrar", {
-            method: 'POST',
+        const url = new URL('http://localhost:8080/tieneQueRegistrar');
+        url.searchParams.append('idUsuario', idUsuario);
+
+        const response = await fetch(url, {
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(loginInfo)
+            }
         });
 
         if (!response.ok) {
@@ -334,7 +386,11 @@ async function registrar(registerInfo) {
         console.error('Error:', error);
         return false;
     }
-}
+};
+
+visibilidadLista(listaResultados, divResultados);
+visibilidadLista(listaSugerencias, divSugerencias);
+visibilidadLista(listaAmigos, divAmigos);
 
 
 
