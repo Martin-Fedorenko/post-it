@@ -10,10 +10,7 @@ import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 
 @Node
@@ -32,11 +29,11 @@ public class Persona {
     private String descripcion;
 
     @Relationship(type = "AMIGOS")
-    public Set<Persona> amigos;
+    public List<Persona> amigos;
 
     public void agregarAmigo(Persona persona) {
         if (amigos == null) {
-            amigos = new HashSet<>();
+            amigos = new ArrayList<>();
         }
         amigos.add(persona);
     }

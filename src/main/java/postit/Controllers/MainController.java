@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import postit.Model.Persona;
 import postit.Repositories.PersonaRepository;
+import postit.Requests.AgregarAmigoRequest;
 import postit.Requests.RegisterRequest;
 import postit.Responses.PerfilResponse;
 import postit.Responses.PersonasResponse;
@@ -57,6 +58,38 @@ public class MainController {
     public ResponseEntity<PersonasResponse> buscar(@RequestParam("nombrePersona") String nombrePersona) {
         List<Persona> personas = personaRepository.findAllByNombrePersona(nombrePersona);
         PersonasResponse personasResponse = new PersonasResponse(conversor.convertirPersonasAResponsePersonas(personas));
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .header("Content-Type", "application/json")
+                .body(personasResponse);
+    }
+
+    @CrossOrigin(origins = "http://localhost:63342")
+    @PostMapping("/agregarAmigo")
+    public ResponseEntity<String> agregarAmigo(@RequestBody AgregarAmigoRequest agregarAmigoRequest) {
+        Persona persona = personaRepository.findByIdUsuario(agregarAmigoRequest.getIdUsuario());
+        Persona nuevoAmigo = personaRepository.findByIdUsuario(agregarAmigoRequest.getIdAmigo());
+        persona.agregarAmigo(nuevoAmigo);
+        nuevoAmigo.agregarAmigo(persona);
+        personaRepository.save(persona);
+        personaRepository.save(nuevoAmigo);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .header("Content-Type", "application/json")
+                .body("Todo bien!");
+    }
+
+    @CrossOrigin(origins = "http://localhost:63342")
+    @GetMapping("/amigos")
+    public ResponseEntity<PersonasResponse> amigos(@RequestParam("idUsuario") String idUsuario) {
+        Persona persona = personaRepository.findByIdUsuario(idUsuario);
+        if(persona.getAmigos().isEmpty()){
+            System.out.println("ESTA VACIO");
+        }else {
+            System.out.println(persona.getAmigos());
+        }
+        PersonasResponse personasResponse = new PersonasResponse(conversor.convertirPersonasAResponsePersonas(persona.getAmigos()));
 
         return ResponseEntity
                 .status(HttpStatus.OK)

@@ -2,11 +2,7 @@ import { signInWithEmailAndPassword,createUserWithEmailAndPassword,GoogleAuthPro
 import { signOut } from "https://www.gstatic.com/firebasejs/10.2.0/firebase-auth.js"
 import { auth } from "./firebase.js";
 
-let registerInfo = {
-  idUsuario: null,
-  nombreCuenta: null,
-  nombrePersona: null
-};
+
 
 window.sessionStorage.clear();
 
@@ -15,6 +11,8 @@ const loginForm = document.querySelector("#login-form");
 const registerForm = document.querySelector("#register-form");
 const configForm = document.querySelector("#configuration-form");
 const buscarForm = document.querySelector("#buscar-form");
+//const agregarAmigoForms = document.querySelectorAll('.agregar-amigo-form');
+const eliminarAmigoForms = document.querySelectorAll('.eliminar-amigo-form');
 
 const filaLogin = document.querySelector(".fila-login");
 const filaRegister = document.querySelector(".fila-register");
@@ -41,14 +39,139 @@ document.addEventListener("DOMContentLoaded", function() {
     volverAlLogin();
 });
 
+function cambiarVisualizacionElementos(elementos, estilo) {
+    elementos.forEach(elemento => {
+        elemento.style.display = estilo;
+    });
+}
+
+function volverAlLogin() {
+    cambiarVisualizacionElementos(
+        [filaRegister, filaConfig, filaHome, filaIzq, filaDer],
+        "none"
+    );
+    cambiarVisualizacionElementos(
+        [navLogout, navLoguearse, navRegistrarse],
+        "block"
+    );
+    filaLogin.style.display = "block";
+}
+
+async function desbloquearHome() {
+    try {
+        cargarPerfil();
+        const idUsuario = window.sessionStorage.getItem('idUsuario');
+        const nuevosAmigos = await amigos(idUsuario);
+        cargarAmigos(nuevosAmigos);
+        visibilidadLista(listaAmigos, divAmigos);
+        buscarForm.querySelector("#input-buscar").value = '';
+        cambiarVisualizacionElementos(
+            [navLoguearse, navRegistrarse],
+            "none"
+        );
+        cambiarVisualizacionElementos(
+            [navLogout, filaIzq, filaHome, filaDer],
+            "block"
+        );
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+    // Seleccionamos todos los formularios dentro de la lista de amigos
+
+
+// Agregamos un event listener a cada formulario
+
+
+const agregarAmigoFormEventListener = async (e, form) => {
+    e.preventDefault(); // Evita el comportamiento de envío del formulario por defecto
+    try {
+        const idAmigo = form.querySelector('input[type="hidden"]').value;
+        const idUsuario = window.sessionStorage.getItem('idUsuario');
+        console.log(idAmigo + " " + idUsuario);
+        const amigoAgregado = await agregarAmigo({"idAmigo": idAmigo, "idUsuario": idUsuario});
+
+
+            const listItem = form.closest('li');
+            if (listItem) {
+                listItem.remove();
+            }
+            const nuevosAmigos = await amigos(idUsuario);
+            cargarAmigos(nuevosAmigos);
+            console.log("agregue amigos");
+
+        visibilidadLista(listaResultados, divResultados);
+        visibilidadLista(listaAmigos, divAmigos);
+
+    } catch(error) {
+        console.log(error);
+    }
+};
+
+
+
+
+
+function cargarAmigos(personas){
+    listaAmigos.innerHTML = '';
+    let contador = 0;
+    for (var persona of personas) {
+        console.log(persona);
+
+        var elementoResultado = `<li class="list-group-item">
+                                    <form class="d-flex justify-content-between align-items-center eliminar-amigo-form">
+                                    <div>
+                                        <div>${persona.nombrePersona}</div>
+                                        <div class="text-muted">${persona.nombrePersona}</div>
+                                        <input type="hidden" name="id-amigo" value=${persona.idUsuario}>
+                                    </div>
+                                    <div class="iconos">
+                                        <button class="btn btn-link boton-icono-secondary" type="submit">
+                                            <i class="fa fa-1 fa-circle-xmark eliminarAmigo"></i>
+                                        </button>
+                                    </div>
+                                    </form>
+                                </li> `;
+
+        listaAmigos.innerHTML += elementoResultado;
+        contador++;
+    }
+};
+
+async function agregarAmigo(amigoInfo) {
+    try {
+        const url = new URL('http://localhost:8080/agregarAmigo');
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(amigoInfo)
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        console.log(await response.text());
+        return true;
+
+    } catch (error) {
+        console.error('Error:', error);
+        return false;
+    }
+};
+
+
 buscarForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     try {
-        listaResultados.innerHTML = '';
-        const nombreBuscado = buscarForm.querySelector("#input-buscar").value;
+
+        let nombreBuscado = buscarForm.querySelector("#input-buscar").value;
         console.log(nombreBuscado);
-        const personas = await buscar(nombreBuscado); // Wait for the personas to be fetched
-        cargarBuscados(personas); // Now personas is available, call cargarBuscados
+        const personas = await buscar(nombreBuscado);
+        buscarForm.querySelector("#input-buscar").value = '';
+        cargarBuscados(personas);
         visibilidadLista(listaResultados, divResultados);
     } catch(error){
         console.log(error);
@@ -56,7 +179,18 @@ buscarForm.addEventListener("submit", async (e) => {
 });
 
 listaResultados.addEventListener("click", function(event) {
-    if (event.target.classList.contains("fa-circle-xmark")) {
+    if (event.target.classList.contains("quitarPersona")) {
+        const liPadre = event.target.closest("li");
+        console.log(liPadre);
+        if (liPadre) {
+            liPadre.remove();
+        }
+    }
+    visibilidadLista(listaResultados, divResultados);
+});
+
+listaResultados.addEventListener("click", function(event) {
+    if (event.target.classList.contains("agregarPersona")) {
         const liPadre = event.target.closest("li");
         console.log(liPadre);
         if (liPadre) {
@@ -67,26 +201,37 @@ listaResultados.addEventListener("click", function(event) {
 });
 
 function cargarBuscados(personas){
+     listaResultados.innerHTML = '';
     for (var persona of personas) {
         console.log(persona);
 
-        var elementoResultado = `<li class="list-group-item d-flex justify-content-between align-items-center">
+        var elementoResultado = `<li class="list-group-item">
+                                    <form class="d-flex justify-content-between align-items-center agregar-amigo-form">
                                     <div>
                                         <div>${persona.nombrePersona}</div>
                                         <div class="text-muted">${persona.nombrePersona}</div>
+                                        <input type="hidden" name="id-amigo" value=${persona.idUsuario}>
                                     </div>
                                     <div class="iconos">
-                                        <button class="btn btn-link boton-icono-success" type="button">
-                                            <i class="fa fa-1 fa-check-circle"></i>
+                                        <button class="btn btn-link boton-icono-success" type="submit">
+                                            <i class="fa fa-1 fa-check-circle agregarAmigo"></i>
                                         </button>
                                         <button class="btn btn-link boton-icono-secondary" type="button">
-                                            <i class="fa fa-1 fa-circle-xmark"></i>
+                                            <i class="fa fa-1 fa-circle-xmark quitarPersona"></i>
                                         </button>
                                     </div>
+                                    </form>
                                 </li> `;
 
         listaResultados.innerHTML += elementoResultado;
+
     }
+    const agregarAmigoForms = document.querySelectorAll('.agregar-amigo-form');
+
+                // Add event listener to each form
+                agregarAmigoForms.forEach(form => {
+                        form.addEventListener('submit', (e) => agregarAmigoFormEventListener(e, form));
+                    });
 };
 
 async function buscar(nombreBuscado) {
@@ -137,33 +282,32 @@ async function perfil(idUsuario) {
     }
 }
 
-
-function volverAlLogin(){
-    filaRegister.style.display = "none";
-    filaConfig.style.display = "none";
-    filaHome.style.display = "none";
-    filaIzq.style.display = "none";
-    filaDer.style.display = "none";
-    navLogout.style.display = "none";
-    navLoguearse.style.display = "block";
-    navRegistrarse.style.display = "block";
-    filaLogin.style.display = "block";
-}
-
-async function desbloquearHome() {
+async function amigos(idUsuario) {
     try {
-        cargarPerfil();
+        const url = new URL('http://localhost:8080/amigos');
+        url.searchParams.append('idUsuario', idUsuario);
 
-        navLoguearse.style.display = "none";
-        navRegistrarse.style.display = "none";
-        navLogout.style.display = "block";
-        filaIzq.style.display = "block";
-        filaHome.style.display = 'block';
-        filaDer.style.display = "block";
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log(data.personas);
+        return data.personas;
+
     } catch (error) {
-        console.error(error);
+        console.error('Error:', error);
     }
 }
+
+
+
 
 function visibilidadLista(listElement, containerElement) {
     if (!listElement.querySelector('li')) {
@@ -234,6 +378,12 @@ navLoguearse.addEventListener("click", function() {
     e.preventDefault();
 
     try {
+      let registerInfo = {
+        idUsuario: null,
+        nombreCuenta: null,
+        nombrePersona: null
+      };
+
       registerInfo.idUsuario = window.sessionStorage.getItem('idUsuario');
       registerInfo.nombreCuenta = configForm.querySelector('input[name="nombreCuenta"]').value;
       registerInfo.nombrePersona = configForm.querySelector('input[name="nombrePersona"]').value;
@@ -369,7 +519,8 @@ async function tieneQueRegistrar(idUsuario) {
 
 async function registrar(registerInfo) {
     try {
-        const response = await fetch(" http://localhost:8080/registrar", {
+        const url = new URL('http://localhost:8080/registrar');
+        const response = await fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
