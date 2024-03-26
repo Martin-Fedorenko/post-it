@@ -38,6 +38,11 @@ public class Persona {
         amigos.add(persona);
     }
 
+    public void eliminarAmigo(Persona amigo) {
+        this.amigos.remove(amigo);
+        amigo.getAmigos().remove(this);
+    }
+
     public Persona(String idUsuario) {
         this.idUsuario = idUsuario;
     }

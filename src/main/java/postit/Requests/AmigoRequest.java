@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter@Setter
-public class AgregarAmigoRequest {
+public class AmigoRequest {
     private String idAmigo;
     private String idUsuario;
 }

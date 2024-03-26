@@ -11,8 +11,6 @@ const loginForm = document.querySelector("#login-form");
 const registerForm = document.querySelector("#register-form");
 const configForm = document.querySelector("#configuration-form");
 const buscarForm = document.querySelector("#buscar-form");
-//const agregarAmigoForms = document.querySelectorAll('.agregar-amigo-form');
-const eliminarAmigoForms = document.querySelectorAll('.eliminar-amigo-form');
 
 const filaLogin = document.querySelector(".fila-login");
 const filaRegister = document.querySelector(".fila-register");
@@ -109,13 +107,61 @@ const agregarAmigoFormEventListener = async (e, form) => {
     }
 };
 
+const eliminarAmigoFormEventListener = async (e, form) => {
+    e.preventDefault();
+    try {
+        const idAmigo = form.querySelector('input[type="hidden"]').value;
+        const idUsuario = window.sessionStorage.getItem('idUsuario');
+        console.log(idAmigo + " " + idUsuario);
+        const amigoAgregado = await eliminarAmigo({"idAmigo": idAmigo, "idUsuario": idUsuario});
+
+
+            const listItem = form.closest('li');
+            if (listItem) {
+                listItem.remove();
+            }
+            const nuevosAmigos = await amigos(idUsuario);
+            cargarAmigos(nuevosAmigos);
+            console.log("elimine amigos");
+
+        visibilidadLista(listaResultados, divResultados);
+        visibilidadLista(listaAmigos, divAmigos);
+
+    } catch(error) {
+        console.log(error);
+    }
+};
+
+async function eliminarAmigo(amigoInfo) {
+    try {
+        const url = new URL('http://localhost:8080/eliminarAmigo');
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(amigoInfo)
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        console.log(await response.text());
+        return true;
+
+    } catch (error) {
+        console.error('Error:', error);
+        return false;
+    }
+};
+
 
 
 
 
 function cargarAmigos(personas){
     listaAmigos.innerHTML = '';
-    let contador = 0;
+
     for (var persona of personas) {
         console.log(persona);
 
@@ -135,7 +181,13 @@ function cargarAmigos(personas){
                                 </li> `;
 
         listaAmigos.innerHTML += elementoResultado;
-        contador++;
+
+        const eliminarAmigoForms = document.querySelectorAll('.eliminar-amigo-form');
+
+                        // Add event listener to each form
+                        eliminarAmigoForms.forEach(form => {
+                                form.addEventListener("submit", (e) => eliminarAmigoFormEventListener(e, form));
+                            });
     }
 };
 
@@ -230,7 +282,7 @@ function cargarBuscados(personas){
 
                 // Add event listener to each form
                 agregarAmigoForms.forEach(form => {
-                        form.addEventListener('submit', (e) => agregarAmigoFormEventListener(e, form));
+                        form.addEventListener("submit", (e) => agregarAmigoFormEventListener(e, form));
                     });
 };
 

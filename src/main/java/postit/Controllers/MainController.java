@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import postit.Model.Persona;
 import postit.Repositories.PersonaRepository;
-import postit.Requests.AgregarAmigoRequest;
+import postit.Requests.AmigoRequest;
 import postit.Requests.RegisterRequest;
 import postit.Responses.PerfilResponse;
 import postit.Responses.PersonasResponse;
@@ -67,9 +67,9 @@ public class MainController {
 
     @CrossOrigin(origins = "http://localhost:63342")
     @PostMapping("/agregarAmigo")
-    public ResponseEntity<String> agregarAmigo(@RequestBody AgregarAmigoRequest agregarAmigoRequest) {
-        Persona persona = personaRepository.findByIdUsuario(agregarAmigoRequest.getIdUsuario());
-        Persona nuevoAmigo = personaRepository.findByIdUsuario(agregarAmigoRequest.getIdAmigo());
+    public ResponseEntity<String> agregarAmigo(@RequestBody AmigoRequest amigoRequest) {
+        Persona persona = personaRepository.findByIdUsuario(amigoRequest.getIdUsuario());
+        Persona nuevoAmigo = personaRepository.findByIdUsuario(amigoRequest.getIdAmigo());
         persona.agregarAmigo(nuevoAmigo);
         nuevoAmigo.agregarAmigo(persona);
         personaRepository.save(persona);
@@ -77,17 +77,48 @@ public class MainController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .header("Content-Type", "application/json")
-                .body("Todo bien!");
+                .body("Amigo agregado!");
+    }
+
+    @CrossOrigin(origins = "http://localhost:63342")
+    @PostMapping("/eliminarAmigo")
+    public ResponseEntity<String> eliminarAmigo(@RequestBody AmigoRequest amigoRequest) {
+        Persona persona = personaRepository.findByIdUsuario(amigoRequest.getIdUsuario());
+        Persona amigo = personaRepository.findByIdUsuario(amigoRequest.getIdAmigo());
+
+        personaRepository.eliminarAmistad(persona.getIdUsuario(), amigo.getIdUsuario());
+
+
+        List<Persona> amigis = amigo.getAmigos();
+
+
+
+
+        if(persona.getAmigos().isEmpty()){
+            System.out.println("ESTA VACIO");
+        }else {
+            for (Persona amig :amigis) {
+                System.out.println("ME QUEDARON ESTOS: " + amig.getNombrePersona());
+            };
+        }
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .header("Content-Type", "application/json")
+                .body("Amigo eliminado!");
     }
 
     @CrossOrigin(origins = "http://localhost:63342")
     @GetMapping("/amigos")
     public ResponseEntity<PersonasResponse> amigos(@RequestParam("idUsuario") String idUsuario) {
         Persona persona = personaRepository.findByIdUsuario(idUsuario);
+        List<Persona> amigis = persona.getAmigos();
         if(persona.getAmigos().isEmpty()){
             System.out.println("ESTA VACIO");
         }else {
-            System.out.println(persona.getAmigos());
+            for (Persona amigo :amigis) {
+                System.out.println("ME QUEDARON ESTOS: " + amigo.getNombrePersona());
+            };
         }
         PersonasResponse personasResponse = new PersonasResponse(conversor.convertirPersonasAResponsePersonas(persona.getAmigos()));
 
