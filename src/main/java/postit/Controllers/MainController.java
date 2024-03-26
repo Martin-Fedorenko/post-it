@@ -46,7 +46,7 @@ public class MainController {
     @GetMapping("/perfil")
     public ResponseEntity<PerfilResponse> perfil(@RequestParam("idUsuario") String idUsuario) {
         Persona persona = personaRepository.findByIdUsuario(idUsuario);
-        PerfilResponse perfilResponse = new PerfilResponse(persona, 259, 399);
+        PerfilResponse perfilResponse = new PerfilResponse(persona, personaRepository.cantidadAmigos(idUsuario), 399);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .header("Content-Type", "application/json")
@@ -68,13 +68,19 @@ public class MainController {
     @CrossOrigin(origins = "http://localhost:63342")
     @PostMapping("/agregarAmigo")
     public ResponseEntity<String> agregarAmigo(@RequestBody AmigoRequest amigoRequest) {
+        String mensaje;
+        if(personaRepository.sonAmigos(amigoRequest.getIdUsuario(), amigoRequest.getIdAmigo())){
+            mensaje = "Ya sos amigo de esa persona";
+        }else{
+            personaRepository.crearAmistad(amigoRequest.getIdUsuario(), amigoRequest.getIdAmigo());
+            mensaje = "Amigo agregado!";
+        }
 
-        personaRepository.crearAmistad(amigoRequest.getIdUsuario(), amigoRequest.getIdAmigo());
 
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .header("Content-Type", "application/json")
-                .body("Amigo agregado!");
+                .body(mensaje);
     }
 
     @CrossOrigin(origins = "http://localhost:63342")
@@ -95,6 +101,19 @@ public class MainController {
     @GetMapping("/amigos")
     public ResponseEntity<PersonasResponse> amigos(@RequestParam("idUsuario") String idUsuario) {
         List<Persona> personas = personaRepository.amigos(idUsuario);
+
+        PersonasResponse personasResponse = new PersonasResponse(conversor.convertirPersonasAResponsePersonas(personas));
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .header("Content-Type", "application/json")
+                .body(personasResponse);
+    }
+
+    @CrossOrigin(origins = "http://localhost:63342")
+    @GetMapping("/sugerir")
+    public ResponseEntity<PersonasResponse> sugerir(@RequestParam("idUsuario") String idUsuario) {
+        List<Persona> personas = personaRepository.sugerirAmigos(idUsuario);
 
         PersonasResponse personasResponse = new PersonasResponse(conversor.convertirPersonasAResponsePersonas(personas));
 

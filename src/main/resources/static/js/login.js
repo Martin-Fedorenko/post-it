@@ -62,6 +62,11 @@ async function desbloquearHome() {
         const nuevosAmigos = await amigos(idUsuario);
         cargarAmigos(nuevosAmigos);
         visibilidadLista(listaAmigos, divAmigos);
+
+        const sugerencias = await sugerir(idUsuario);
+        cargarSugeridos(sugerencias);
+        visibilidadLista(listaSugerencias, divSugerencias);
+
         buscarForm.querySelector("#input-buscar").value = '';
         cambiarVisualizacionElementos(
             [navLoguearse, navRegistrarse],
@@ -97,10 +102,17 @@ const agregarAmigoFormEventListener = async (e, form) => {
             }
             const nuevosAmigos = await amigos(idUsuario);
             cargarAmigos(nuevosAmigos);
+
+            const sugerencias = await sugerir(idUsuario);
+                    cargarSugeridos(sugerencias);
+
+
+
             console.log("agregue amigos");
 
         visibilidadLista(listaResultados, divResultados);
         visibilidadLista(listaAmigos, divAmigos);
+        visibilidadLista(listaSugerencias, divSugerencias);
 
     } catch(error) {
         console.log(error);
@@ -122,6 +134,13 @@ const eliminarAmigoFormEventListener = async (e, form) => {
             }
             const nuevosAmigos = await amigos(idUsuario);
             cargarAmigos(nuevosAmigos);
+
+            const sugerencias = await sugerir(idUsuario);
+                    cargarSugeridos(sugerencias);
+
+                    visibilidadLista(listaSugerencias, divSugerencias);
+
+
             console.log("elimine amigos");
 
         visibilidadLista(listaResultados, divResultados);
@@ -252,6 +271,28 @@ listaResultados.addEventListener("click", function(event) {
     visibilidadLista(listaResultados, divResultados);
 });
 
+listaSugerencias.addEventListener("click", function(event) {
+    if (event.target.classList.contains("quitarPersona")) {
+        const liPadre = event.target.closest("li");
+        console.log(liPadre);
+        if (liPadre) {
+            liPadre.remove();
+        }
+    }
+    visibilidadLista(listaResultados, divResultados);
+});
+
+listaSugerencias.addEventListener("click", function(event) {
+    if (event.target.classList.contains("agregarPersona")) {
+        const liPadre = event.target.closest("li");
+        console.log(liPadre);
+        if (liPadre) {
+            liPadre.remove();
+        }
+    }
+    visibilidadLista(listaSugerencias, divSugerencias);
+});
+
 function cargarBuscados(personas){
      listaResultados.innerHTML = '';
     for (var persona of personas) {
@@ -276,6 +317,40 @@ function cargarBuscados(personas){
                                 </li> `;
 
         listaResultados.innerHTML += elementoResultado;
+
+    }
+    const agregarAmigoForms = document.querySelectorAll('.agregar-amigo-form');
+
+                // Add event listener to each form
+                agregarAmigoForms.forEach(form => {
+                        form.addEventListener("submit", (e) => agregarAmigoFormEventListener(e, form));
+                    });
+};
+
+function cargarSugeridos(personas){
+     listaSugerencias.innerHTML = '';
+    for (var persona of personas) {
+        console.log(persona);
+
+        var elementoResultado = `<li class="list-group-item">
+                                    <form class="d-flex justify-content-between align-items-center agregar-amigo-form">
+                                    <div>
+                                        <div>${persona.nombrePersona}</div>
+                                        <div class="text-muted">${persona.nombrePersona}</div>
+                                        <input type="hidden" name="id-amigo" value=${persona.idUsuario}>
+                                    </div>
+                                    <div class="iconos">
+                                        <button class="btn btn-link boton-icono-success" type="submit">
+                                            <i class="fa fa-1 fa-check-circle agregarAmigo"></i>
+                                        </button>
+                                        <button class="btn btn-link boton-icono-secondary" type="button">
+                                            <i class="fa fa-1 fa-circle-xmark quitarPersona"></i>
+                                        </button>
+                                    </div>
+                                    </form>
+                                </li> `;
+
+        listaSugerencias.innerHTML += elementoResultado;
 
     }
     const agregarAmigoForms = document.querySelectorAll('.agregar-amigo-form');
@@ -337,6 +412,30 @@ async function perfil(idUsuario) {
 async function amigos(idUsuario) {
     try {
         const url = new URL('http://localhost:8080/amigos');
+        url.searchParams.append('idUsuario', idUsuario);
+
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log(data.personas);
+        return data.personas;
+
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+async function sugerir(idUsuario) {
+    try {
+        const url = new URL('http://localhost:8080/sugerir');
         url.searchParams.append('idUsuario', idUsuario);
 
         const response = await fetch(url, {
