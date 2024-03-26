@@ -28,21 +28,6 @@ public class Persona {
 
     private String descripcion;
 
-    @Relationship(type = "AMIGOS")
-    public List<Persona> amigos;
-
-    public void agregarAmigo(Persona persona) {
-        if (amigos == null) {
-            amigos = new ArrayList<>();
-        }
-        amigos.add(persona);
-    }
-
-    public void eliminarAmigo(Persona amigo) {
-        this.amigos.remove(amigo);
-        amigo.getAmigos().remove(this);
-    }
-
     public Persona(String idUsuario) {
         this.idUsuario = idUsuario;
     }

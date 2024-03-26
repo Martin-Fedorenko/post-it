@@ -68,12 +68,9 @@ public class MainController {
     @CrossOrigin(origins = "http://localhost:63342")
     @PostMapping("/agregarAmigo")
     public ResponseEntity<String> agregarAmigo(@RequestBody AmigoRequest amigoRequest) {
-        Persona persona = personaRepository.findByIdUsuario(amigoRequest.getIdUsuario());
-        Persona nuevoAmigo = personaRepository.findByIdUsuario(amigoRequest.getIdAmigo());
-        persona.agregarAmigo(nuevoAmigo);
-        nuevoAmigo.agregarAmigo(persona);
-        personaRepository.save(persona);
-        personaRepository.save(nuevoAmigo);
+
+        personaRepository.crearAmistad(amigoRequest.getIdUsuario(), amigoRequest.getIdAmigo());
+
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .header("Content-Type", "application/json")
@@ -88,20 +85,6 @@ public class MainController {
 
         personaRepository.eliminarAmistad(persona.getIdUsuario(), amigo.getIdUsuario());
 
-
-        List<Persona> amigis = amigo.getAmigos();
-
-
-
-
-        if(persona.getAmigos().isEmpty()){
-            System.out.println("ESTA VACIO");
-        }else {
-            for (Persona amig :amigis) {
-                System.out.println("ME QUEDARON ESTOS: " + amig.getNombrePersona());
-            };
-        }
-
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .header("Content-Type", "application/json")
@@ -111,16 +94,9 @@ public class MainController {
     @CrossOrigin(origins = "http://localhost:63342")
     @GetMapping("/amigos")
     public ResponseEntity<PersonasResponse> amigos(@RequestParam("idUsuario") String idUsuario) {
-        Persona persona = personaRepository.findByIdUsuario(idUsuario);
-        List<Persona> amigis = persona.getAmigos();
-        if(persona.getAmigos().isEmpty()){
-            System.out.println("ESTA VACIO");
-        }else {
-            for (Persona amigo :amigis) {
-                System.out.println("ME QUEDARON ESTOS: " + amigo.getNombrePersona());
-            };
-        }
-        PersonasResponse personasResponse = new PersonasResponse(conversor.convertirPersonasAResponsePersonas(persona.getAmigos()));
+        List<Persona> personas = personaRepository.amigos(idUsuario);
+
+        PersonasResponse personasResponse = new PersonasResponse(conversor.convertirPersonasAResponsePersonas(personas));
 
         return ResponseEntity
                 .status(HttpStatus.OK)

@@ -6,16 +6,26 @@ import org.springframework.data.repository.query.Param;
 import postit.Model.Persona;
 
 import java.util.List;
+
 public interface PersonaRepository extends Neo4jRepository<Persona, Long> {
     Boolean existsByIdUsuario(String idUsuario);
+
     Persona findByIdUsuario(String idUsuario);
+
     List<Persona> findAllByNombrePersona(String nombrePersona);
-    Persona findByNombrePersona(String nombrePersona);
 
-    @Query("MATCH (p:Persona)-[r:AMIGOS]-(other) WITH r, COUNT(other) AS count WHERE count = 1 RETURN count(r) AS cantidadAmigos")
-    int cantidadAmigos();
+    @Query("MATCH (n1:Persona {idUsuario: $idUsuario})-[r1:AMIGOS]->(n2:Persona) RETURN n2")
+    List<Persona> amigos(@Param("idUsuario") String idUsuario);
 
-    @Query("MATCH (n:Persona {idUsuario: $idUsuario1})-[r:AMIGOS]-(m:Persona {idUsuario: $idUsuario2}) DELETE r")
+    @Query("MATCH (n:Persona {idUsuario: $idUsuario})-[r]->() RETURN count(r) AS cantidadAmigos")
+    int cantidadAmigos(@Param("idUsuario") String idUsuario);
+
+    @Query("MATCH (n1:Persona {idUsuario: $idUsuario1})-[r1:AMIGOS]->(n2:Persona {idUsuario: $idUsuario2}), (n2:Persona {idUsuario: $idUsuario2})-[r2:AMIGOS]->(n1:Persona {idUsuario: $idUsuario1}) DELETE r1, r2")
     void eliminarAmistad(@Param("idUsuario1") String idUsuario1, @Param("idUsuario2") String idUsuario2);
 
+    @Query("MATCH (n1:Persona {idUsuario: $idUsuario})-[r1:AMIGOS]->(n2:Persona)-[r2:AMIGOS]->(n3:Persona) WHERE n3.idUsuario <> $idUsuario RETURN n3")
+    List<Persona> sugerirAmigos(@Param("idUsuario") String idUsuario);
+
+    @Query("MATCH (n1:Persona {idUsuario: $idUsuario1}), (n2:Persona {idUsuario: $idUsuario2}) CREATE (n1)-[:AMIGOS]->(n2), (n2)-[:AMIGOS]->(n1)")
+    void crearAmistad(@Param("idUsuario1") String idUsuario1, @Param("idUsuario2") String idUsuario2);
 }
