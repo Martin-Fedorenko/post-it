@@ -4,21 +4,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import postit.Model.Comentario;
 import postit.Model.Persona;
+import postit.Model.Publicacion;
 import postit.Repositories.PersonaRepository;
+import postit.Repositories.PublicacionRepository;
 import postit.Requests.AmigoRequest;
+import postit.Requests.PublicarRequest;
 import postit.Requests.RegisterRequest;
 import postit.Responses.PerfilResponse;
 import postit.Responses.PersonasResponse;
 import postit.Services.Conversor;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 public class MainController {
 
     @Autowired
     private PersonaRepository personaRepository;
+
+    @Autowired
+    private PublicacionRepository publicacionRepository;
     @Autowired
     private Conversor conversor;
 
@@ -71,6 +80,8 @@ public class MainController {
         String mensaje;
         if(personaRepository.sonAmigos(amigoRequest.getIdUsuario(), amigoRequest.getIdAmigo())){
             mensaje = "Ya sos amigo de esa persona";
+        }else if(amigoRequest.getIdUsuario().equals(amigoRequest.getIdAmigo())){
+            mensaje = "No podes ser tu propio amigo";
         }else{
             personaRepository.crearAmistad(amigoRequest.getIdUsuario(), amigoRequest.getIdAmigo());
             mensaje = "Amigo agregado!";
@@ -121,6 +132,24 @@ public class MainController {
                 .status(HttpStatus.OK)
                 .header("Content-Type", "application/json")
                 .body(personasResponse);
+    }
+
+    @CrossOrigin(origins = "http://localhost:63342")
+    @PostMapping("/publicar")
+    public ResponseEntity<String> publicar(@RequestBody PublicarRequest publicarRequest) {
+        Persona persona = personaRepository.findByIdUsuario(publicarRequest.getIdUsuario());
+        Publicacion nuevaPublicacion = new Publicacion(UUID.randomUUID(), persona.getIdUsuario(), persona.getNombreCuenta(), persona.getNombrePersona(), publicarRequest.getContenido(), LocalDateTime.now());
+
+        Comentario comentario1 = new Comentario(UUID.randomUUID(), persona.getIdUsuario(), persona.getNombreCuenta(), persona.getNombrePersona(), publicarRequest.getContenido(), LocalDateTime.now());
+        Comentario comentario2 = new Comentario(UUID.randomUUID(), persona.getIdUsuario(), persona.getNombreCuenta(), persona.getNombrePersona(), publicarRequest.getContenido(), LocalDateTime.now());
+        nuevaPublicacion.getComentarios().add(comentario1);
+        nuevaPublicacion.getComentarios().add(comentario2);
+        publicacionRepository.save(nuevaPublicacion);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .header("Content-Type", "application/json")
+                .body("Publicacion publicada!");
     }
 
 }

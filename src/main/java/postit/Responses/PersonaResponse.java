@@ -7,7 +7,7 @@ import postit.Model.Persona;
 
 @Getter @Setter @AllArgsConstructor
 public class PersonaResponse {
-    private Long idPersona;
+    private String idPersona;
 
     private String idUsuario;
 

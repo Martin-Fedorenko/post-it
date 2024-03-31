@@ -106,6 +106,8 @@ const agregarAmigoFormEventListener = async (e, form) => {
             const sugerencias = await sugerir(idUsuario);
                     cargarSugeridos(sugerencias);
 
+                    cargarPerfil();
+
 
 
             console.log("agregue amigos");
@@ -140,6 +142,7 @@ const eliminarAmigoFormEventListener = async (e, form) => {
 
                     visibilidadLista(listaSugerencias, divSugerencias);
 
+                    cargarPerfil();
 
             console.log("elimine amigos");
 

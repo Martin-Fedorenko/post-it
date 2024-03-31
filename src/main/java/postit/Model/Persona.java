@@ -18,7 +18,7 @@ import java.util.*;
 public class Persona {
 
     @Id @GeneratedValue
-    private Long idPersona;
+    private String idPersona;
 
     private String idUsuario;
 
