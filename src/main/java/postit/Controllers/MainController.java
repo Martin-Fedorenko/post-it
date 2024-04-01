@@ -53,7 +53,7 @@ public class MainController {
     @GetMapping("/perfil")
     public ResponseEntity<PerfilResponse> perfil(@RequestParam("idUsuario") String idUsuario) {
         Persona persona = personaRepository.findByIdUsuario(idUsuario);
-        PerfilResponse perfilResponse = new PerfilResponse(persona, personaRepository.cantidadAmigos(idUsuario), 399);
+        PerfilResponse perfilResponse = new PerfilResponse(persona, personaRepository.cantidadAmigos(idUsuario), publicacionRepository.cantidadPublicaciones(idUsuario));
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .header("Content-Type", "application/json")
@@ -135,10 +135,10 @@ public class MainController {
         Persona persona = personaRepository.findByIdUsuario(publicarRequest.getIdUsuario());
         Publicacion nuevaPublicacion = new Publicacion(new ClaveUsuarioPublicacion(persona.getIdUsuario(), UUID.randomUUID()), persona.getNombreCuenta(), persona.getNombrePersona(), publicarRequest.getContenido(), LocalDateTime.now());
 
-        Comentario comentario1 = new Comentario("MO06LUcGzRc3OUWWExk1AtGdeWo2", "ika", persona.getNombrePersona(), "comentarium1", LocalDateTime.now());
-        Comentario comentario2 = new Comentario("1s6Jtl2teOdxiU861kJX6jWQqYq1", "ike", persona.getNombrePersona(), "comentarium2", LocalDateTime.now());
-        nuevaPublicacion.getComentarios().add(comentario1);
-        nuevaPublicacion.getComentarios().add(comentario2);
+        //Comentario comentario1 = new Comentario("MO06LUcGzRc3OUWWExk1AtGdeWo2", "ika", persona.getNombrePersona(), "comentarium1", LocalDateTime.now());
+        //Comentario comentario2 = new Comentario("1s6Jtl2teOdxiU861kJX6jWQqYq1", "ike", persona.getNombrePersona(), "comentarium2", LocalDateTime.now());
+        //nuevaPublicacion.getComentarios().add(comentario1);
+        //nuevaPublicacion.getComentarios().add(comentario2);
         publicacionRepository.save(nuevaPublicacion);
 
         return ResponseEntity
@@ -153,6 +153,9 @@ public class MainController {
         List<String> idAmigos= personaRepository.idAmigos(idUsuario);
         System.out.println("List of amigos: " + idAmigos);
         List<Publicacion> publicaciones = publicacionRepository.sugerirPublicaciones(idAmigos);
+
+        //FALTA ORDENAR PUBLICACIONES POR FECHA DE PUBLICACION
+
         //List<Publicacion> publicaciones = new ArrayList<>();
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -167,15 +170,14 @@ public class MainController {
         Optional<Publicacion> publicacionOptional = publicacionRepository.findById(clave);
         String mensaje;
         if(publicacionOptional.isPresent()) {
-            Publicacion publicacion = publicacionOptional.get(); // Extract Publicacion from Optional
+            Publicacion publicacion = publicacionOptional.get();
             Comentario nuevoComentario = new Comentario(comentarRequest);
             publicacion.getComentarios().add(nuevoComentario);
-            publicacionRepository.save(publicacion); // Now passing the extracted Publicacion
+            publicacionRepository.save(publicacion);
             mensaje = "Publicación comentada!";
         } else {
             mensaje = "Publicación inexistente";
         }
-
 
         return ResponseEntity
                 .status(HttpStatus.OK)

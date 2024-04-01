@@ -1,7 +1,7 @@
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.2.0/firebase-auth.js";
 import { signOut } from "https://www.gstatic.com/firebasejs/10.2.0/firebase-auth.js";
 import { auth } from "./firebase.js";
-import { agregarAmigo, eliminarAmigo, sugerir, amigos, perfil, buscar, registrar, tieneQueRegistrar } from "./solicitudes.js";
+import { agregarAmigo, eliminarAmigo, sugerir, amigos, perfil, buscar, registrar, tieneQueRegistrar, sugerirPublicaciones } from "./solicitudes.js";
 
 window.sessionStorage.clear();
 
@@ -38,11 +38,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
 function cargarLogin() {
     cambiarVisualizacionElementos(
-        [filaRegister, filaConfig, filaHome, filaIzq, filaDer],
+        [filaRegister, filaConfig, filaHome, filaIzq, filaDer, navLogout],
         "none"
     );
     cambiarVisualizacionElementos(
-        [navLogout, navLoguearse, navRegistrarse],
+        [navLoguearse, navRegistrarse],
         "block"
     );
     filaLogin.style.display = "block";
@@ -60,9 +60,11 @@ async function cargarHome() {
         const amistades = await amigos(idUsuario);
         cargarAmigos(amistades);
 
-
         const sugeridos = await sugerir(idUsuario);
         cargarSugeridos(sugeridos);
+
+        const publicaciones = await sugerirPublicaciones(idUsuario);
+        cargarPublicaciones(publicaciones);
 
         cambiarVisualizacionElementos(
             [navLoguearse, navRegistrarse],
@@ -125,6 +127,67 @@ function cargarAmigos(personas){
     }
 }
 
+
+function cargarPublicaciones(publicaciones){
+    divPublicaciones.innerHTML = '';
+
+    if(publicaciones.length !== 0){
+
+        for (var publicacion of publicaciones) {
+            var elementoResultado = `<div class="card mb-3 publicacion">
+                                                   <div class="card-header">
+                                                     <div class="row">
+                                                       <div class="col">
+                                                         <div class="d-flex align-items-center">
+                                                           <div class="me-2">${publicacion.nombrePersona}</div>
+                                                           <div class="me-2">•</div>
+                                                           <div class="me-2">${publicacion.nombreCuenta}</div>
+                                                           <div class="me-2">•</div>
+                                                           <div class="me-2">${new Date(publicacion.horarioPublicacion).toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' })}</div>
+                                                         </div>
+                                                       </div>
+                                                     </div>
+                                                   </div>
+                                                   <div class="card-body contenido">
+                                                     <p class="card-text">${publicacion.contenido}</p>
+                                                   </div>
+                                                   <div class="card-footer comentarios">
+                                                     <div class="entrada-comentario">
+                                                       <form>
+                                                         <div class="input-group">
+                                                           <input type="text" class="form-control" placeholder="Comment it!">
+                                                           <button class="btn btn-success" type="button">Publicar</button>
+                                                         </div>
+                                                       </form>
+                                                     </div>
+                                                     <hr>
+                                                     <ul class="list-group lista-comentarios">
+                                                       ${cargarComentarios(publicacion.comentarios)}
+                                                     </ul>
+                                                   </div>
+                                                 </div>`;
+
+            divPublicaciones.innerHTML += elementoResultado;
+        }
+    }else{
+             divPublicaciones.innerHTML += `<h3 class="card-header text-center mt-5">No hay publicaciones disponibles...</h3>`;
+    }
+}
+
+function cargarComentarios(comentarios) {
+    let listaComentarios = '';
+    if(comentarios != null){
+        for (let comentario of comentarios) {
+            listaComentarios += `<li class="list-group-item comentario">${comentario.nombrePersona}: ${comentario.texto}</li>`;
+        }
+    }
+    return listaComentarios;
+}
+
+
+
+
+
 function cargarBuscados(personas) {
     cargarPersonas(personas, listaResultados);
 }
@@ -186,6 +249,10 @@ const administrarAmigoFormEventListener = async (e, form, funcion) => {
 
         const persona = await perfil(idUsuario);
         cargarPerfil(persona);
+
+        const publicaciones = await sugerirPublicaciones(idUsuario);
+        cargarPublicaciones(publicaciones);
+
 
         visibilidadLista(listaResultados, divResultados);
         visibilidadLista(listaAmigos, divAmigos);

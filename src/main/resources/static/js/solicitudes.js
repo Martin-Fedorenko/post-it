@@ -183,3 +183,72 @@ export async function agregarAmigo(datos) {
         console.error('Error:', error);
     }
 }
+
+export async function publicar(datos) {
+    try {
+        const url = new URL('http://localhost:8080/publicar');
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(datos)
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        console.log(await response.text());
+        console.log("publicacion publicada!");
+
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+export async function comentar(datos) {
+    try {
+        const url = new URL('http://localhost:8080/comentar');
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(datos)
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        console.log(await response.text());
+        console.log("comentario publicada!");
+
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+export async function sugerirPublicaciones(idUsuario) {
+    try {
+        const url = new URL('http://localhost:8080/sugerirPublicaciones');
+        url.searchParams.append('idUsuario', idUsuario);
+
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log("Las publicaciones son:");
+        console.log(data);
+        return data;
+
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
