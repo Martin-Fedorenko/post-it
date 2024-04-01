@@ -31,4 +31,8 @@ public interface PersonaRepository extends Neo4jRepository<Persona, String> {
 
     @Query("MATCH (n1:Persona {idUsuario: $idUsuario1}), (n2:Persona {idUsuario: $idUsuario2}) CREATE (n1)-[:AMIGOS]->(n2)")
     void crearAmistad(@Param("idUsuario1") String idUsuario1, @Param("idUsuario2") String idUsuario2);
+
+    @Query("MATCH (n1:Persona {idUsuario: $idUsuario})-[:AMIGOS]-(n2:Persona) RETURN n2.idUsuario")
+    List<String> idAmigos(@Param("idUsuario") String idUsuario);
+
 }
