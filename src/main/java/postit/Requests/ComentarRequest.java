@@ -13,7 +13,5 @@ public class ComentarRequest {
     private String idPublicacion;
     private String idUsuarioPublicador;
     private String idUsuarioComentador;
-    private String nombreCuenta;
-    private String nombrePersona;
     private String contenido;
 }

@@ -30,13 +30,12 @@ public class Publicacion {
     @CassandraType(type = CassandraType.Name.LIST, typeArguments = CassandraType.Name.UDT, userTypeName = "comentario")
     private List<Comentario> comentarios;
 
-    public Publicacion(ClaveUsuarioPublicacion claveUsuarioPublicacion, String nombreCuenta, String nombrePersona, String contenido, LocalDateTime horarioPublicacion) {
+    public Publicacion(ClaveUsuarioPublicacion claveUsuarioPublicacion, String nombreCuenta, String nombrePersona, String contenido) {
         this.claveUsuarioPublicacion = claveUsuarioPublicacion;
         this.nombreCuenta = nombreCuenta;
         this.nombrePersona = nombrePersona;
         this.contenido = contenido;
-        this.horarioPublicacion = horarioPublicacion;
-        this.comentarios = new ArrayList<>();
+        this.horarioPublicacion = LocalDateTime.now();
     }
 
 

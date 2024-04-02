@@ -15,7 +15,6 @@ export async function tieneQueRegistrar(idUsuario) {
         }
 
         const data = await response.json();
-        console.log(data);
         return !!data;
     } catch (error) {
         console.error('Error:', error);
@@ -61,7 +60,6 @@ export async function buscar(nombreBuscado) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const data = await response.json();
-        console.log(data);
         return data;
 
     } catch (error) {
@@ -108,7 +106,6 @@ export async function amigos(idUsuario) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const data = await response.json();
-        console.log(data);
         return data;
 
     } catch (error) {
@@ -132,7 +129,6 @@ export async function sugerir(idUsuario) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const data = await response.json();
-        console.log(data);
         return data;
 
     } catch (error) {
@@ -155,7 +151,6 @@ export async function eliminarAmigo(datos) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         console.log(await response.text());
-        console.log("elimine amigos");
 
     } catch (error) {
         console.error('Error:', error);
@@ -177,7 +172,6 @@ export async function agregarAmigo(datos) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         console.log(await response.text());
-        console.log("agregue amigos");
 
     } catch (error) {
         console.error('Error:', error);
@@ -199,7 +193,6 @@ export async function publicar(datos) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         console.log(await response.text());
-        console.log("publicacion publicada!");
 
     } catch (error) {
         console.error('Error:', error);
@@ -221,7 +214,6 @@ export async function comentar(datos) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         console.log(await response.text());
-        console.log("comentario publicada!");
 
     } catch (error) {
         console.error('Error:', error);
@@ -244,8 +236,6 @@ export async function sugerirPublicaciones(idUsuario) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const data = await response.json();
-        console.log("Las publicaciones son:");
-        console.log(data);
         return data;
 
     } catch (error) {

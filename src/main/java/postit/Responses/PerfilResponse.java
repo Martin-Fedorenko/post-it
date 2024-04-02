@@ -8,7 +8,7 @@ import postit.Model.Persona;
 @Getter
 @Setter
 public class PerfilResponse {
-    private String idPersona;
+    private Long idPersona;
     private String nombreCuenta;
     private String nombrePersona;
     private String descripcion;

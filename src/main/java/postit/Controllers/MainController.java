@@ -17,6 +17,7 @@ import postit.Requests.RegistrarRequest;
 import postit.Responses.PerfilResponse;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -61,7 +62,7 @@ public class MainController {
     }
 
     @CrossOrigin(origins = "http://localhost:63342")
-    @GetMapping("/buscar") //aca en vez de personas tienen que ser personas response
+    @GetMapping("/buscar")
     public ResponseEntity<List<Persona>> buscar(@RequestParam("nombrePersona") String nombrePersona) {
         List<Persona> personas = personaRepository.findAllByNombrePersona(nombrePersona);
 
@@ -133,12 +134,8 @@ public class MainController {
     @PostMapping("/publicar")
     public ResponseEntity<String> publicar(@RequestBody PublicarRequest publicarRequest) {
         Persona persona = personaRepository.findByIdUsuario(publicarRequest.getIdUsuario());
-        Publicacion nuevaPublicacion = new Publicacion(new ClaveUsuarioPublicacion(persona.getIdUsuario(), UUID.randomUUID()), persona.getNombreCuenta(), persona.getNombrePersona(), publicarRequest.getContenido(), LocalDateTime.now());
+        Publicacion nuevaPublicacion = new Publicacion(new ClaveUsuarioPublicacion(persona.getIdUsuario(), UUID.randomUUID()), persona.getNombreCuenta(), persona.getNombrePersona(), publicarRequest.getContenido());
 
-        //Comentario comentario1 = new Comentario("MO06LUcGzRc3OUWWExk1AtGdeWo2", "ika", persona.getNombrePersona(), "comentarium1", LocalDateTime.now());
-        //Comentario comentario2 = new Comentario("1s6Jtl2teOdxiU861kJX6jWQqYq1", "ike", persona.getNombrePersona(), "comentarium2", LocalDateTime.now());
-        //nuevaPublicacion.getComentarios().add(comentario1);
-        //nuevaPublicacion.getComentarios().add(comentario2);
         publicacionRepository.save(nuevaPublicacion);
 
         return ResponseEntity
@@ -150,13 +147,10 @@ public class MainController {
     @CrossOrigin(origins = "http://localhost:63342")
     @GetMapping("/sugerirPublicaciones")
     public ResponseEntity<List<Publicacion>> sugerirPublicaciones(@RequestParam("idUsuario") String idUsuario) {
-        List<String> idAmigos= personaRepository.idAmigos(idUsuario);
-        System.out.println("List of amigos: " + idAmigos);
+        List<String> idAmigos = personaRepository.idAmigos(idUsuario);
+        idAmigos.add(idUsuario);
         List<Publicacion> publicaciones = publicacionRepository.sugerirPublicaciones(idAmigos);
 
-        //FALTA ORDENAR PUBLICACIONES POR FECHA DE PUBLICACION
-
-        //List<Publicacion> publicaciones = new ArrayList<>();
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .header("Content-Type", "application/json")
@@ -171,7 +165,13 @@ public class MainController {
         String mensaje;
         if(publicacionOptional.isPresent()) {
             Publicacion publicacion = publicacionOptional.get();
-            Comentario nuevoComentario = new Comentario(comentarRequest);
+            Persona persona = personaRepository.findByIdUsuario(comentarRequest.getIdUsuarioComentador());
+            Comentario nuevoComentario = new Comentario(comentarRequest, persona.getNombreCuenta(), persona.getNombrePersona());
+
+            if (publicacion.getComentarios() == null) {
+                publicacion.setComentarios(new ArrayList<>());
+            }
+
             publicacion.getComentarios().add(nuevoComentario);
             publicacionRepository.save(publicacion);
             mensaje = "Publicación comentada!";

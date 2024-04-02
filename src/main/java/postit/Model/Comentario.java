@@ -19,10 +19,10 @@ public class Comentario {
     private String contenido;
     private LocalDateTime horarioComentario;
 
-    public Comentario(ComentarRequest comentarRequest) {
+    public Comentario(ComentarRequest comentarRequest, String nombreCuenta, String nombrePersona) {
         this.idUsuarioComentador = comentarRequest.getIdUsuarioComentador();
-        this.nombreCuenta = comentarRequest.getNombreCuenta();
-        this.nombrePersona = comentarRequest.getNombrePersona();
+        this.nombreCuenta = nombreCuenta;
+        this.nombrePersona = nombrePersona;
         this.contenido = comentarRequest.getContenido();
         this.horarioComentario = LocalDateTime.now();
     }
