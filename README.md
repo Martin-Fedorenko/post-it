@@ -7,4 +7,4 @@ It's a single page social network made using:
 - Apache Cassandra and Neo4j (persistence).
 
 ## Features
-This website allows you to search for friends, as well as publish and comment on posts with them.
+This website allows you to find and make friends, as well as publish and comment on posts with them.
